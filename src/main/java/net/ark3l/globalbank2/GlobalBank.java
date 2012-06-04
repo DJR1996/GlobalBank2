@@ -35,7 +35,9 @@ public class GlobalBank extends JavaPlugin {
 
 	public final HashMap<Player, ArrayList<ItemStack>> isk = new HashMap<Player, ArrayList<ItemStack>>();
 	public final HashMap<Player, Bankventory> bankventories = new HashMap<Player, Bankventory>();
-	public final ArrayList<Player> punchers = new ArrayList<Player>();
+
+	public final ArrayList<Player> playersDeletingBankers = new ArrayList<Player>();
+	public final ArrayList<Player> playersChangingBankersDirection = new ArrayList<Player>();
 	public final Sort sort = new Sort();
 
 	public Economy economy = null;
@@ -98,8 +100,8 @@ public class GlobalBank extends JavaPlugin {
 		return (economy != null);
 	}
 
-	public boolean onCommand(CommandSender sender, Command cmd,
-	                         String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+
 		if (commandLabel.equalsIgnoreCase("gb") && sender instanceof Player) {
 			if (args.length > 0) {
 				if (args[0].equalsIgnoreCase("create") && args.length > 1 && sender.hasPermission("gb.create")) {
@@ -120,7 +122,12 @@ public class GlobalBank extends JavaPlugin {
 					sender.sendMessage(ChatColor.BLUE + "[GlobalBank2] "
 							+ ChatColor.WHITE
 							+ "Please punch a Banker to remove them.");
-					this.punchers.add((Player) sender);
+					this.playersDeletingBankers.add((Player) sender);
+				} else if (args[0].equalsIgnoreCase("face") && sender.hasPermission("gb.face")) {
+					sender.sendMessage(ChatColor.BLUE + "[GlobalBank2] "
+							+ ChatColor.WHITE
+							+ "Please punch a Banker to make them face towards you.");
+					this.playersChangingBankersDirection.add((Player) sender);
 				} else {
 					sender.sendMessage(ChatColor.BLUE
 							+ "[GlobalBank2] "

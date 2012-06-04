@@ -11,14 +11,18 @@ import java.io.*;
 public class MiscMethods {
 	public static Location locFromString(String s) {
 		String[] split = s.split(",");
-		return new Location(GlobalBank.plugin.getServer().getWorld(
+		Location l = new Location(GlobalBank.plugin.getServer().getWorld(
 				split[0]), Double.parseDouble(split[1]),
 				Double.parseDouble(split[2]), Double.parseDouble(split[3]));
+		if(split.length > 4)
+			l.setYaw(Float.parseFloat(split[4]));
+
+		return l;
 	}
 
 	public static String stringFromLoc(Location l) {
 		return l.getWorld().getName() + "," + l.getX() + "," + l.getY() + ","
-				+ l.getZ();
+				+ l.getZ() + "," + l.getYaw();
 
 	}
 

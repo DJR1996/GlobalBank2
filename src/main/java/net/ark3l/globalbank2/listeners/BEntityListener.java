@@ -26,17 +26,21 @@ public class BEntityListener implements Listener {
 			return;
 		}
 		if (b.manager.isNPC(event.getEntity())) {
-			if (b.punchers.contains(((EntityDamageByEntityEvent) event)
-					.getDamager())) {
+			Player player = (Player) ((EntityDamageByEntityEvent) event).getDamager();
+			if (b.playersDeletingBankers.contains(player)) {
 				Banker banker = b.manager.getBanker(b.manager.getNPCIdFromEntity(event.getEntity()));
 				SqliteDB.delBanker(banker.bankName);
 				b.manager.despawnById(b.manager.getNPCIdFromEntity(banker.getBukkitEntity()));
-				((Player) ((EntityDamageByEntityEvent) event).getDamager())
-						.sendMessage(ChatColor.BLUE + "[GlobalBank2]"
-								+ ChatColor.WHITE
-								+ " Banker has been removed.");
-				b.punchers.remove(((EntityDamageByEntityEvent) event)
-						.getDamager());
+				player.sendMessage(ChatColor.BLUE + "[GlobalBank2]"
+						+ ChatColor.WHITE
+						+ " Banker has been removed.");
+				b.playersDeletingBankers.remove(player);
+			} else if(b.playersChangingBankersDirection.contains(player)) {
+				Banker banker = b.manager.getBanker(b.manager.getNPCIdFromEntity(event.getEntity()));
+				banker.turnToFace(player.getLocation());
+				SqliteDB.delBanker(banker.bankName);
+				SqliteDB.newBanker(banker.bankName, banker.getBukkitEntity().getLocation());
+				b.playersChangingBankersDirection.remove(player);
 			}
 			event.setCancelled(true);
 		}

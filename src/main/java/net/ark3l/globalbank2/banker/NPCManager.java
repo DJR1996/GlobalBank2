@@ -121,6 +121,7 @@ public class NPCManager {
 			npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 			ws.addEntity(npcEntity); //the right way
 			Banker npc = new Banker(npcEntity, bankName);
+			npc.setYaw(l.getYaw());
 
 			if(Bukkit.getPluginManager().isPluginEnabled("Spout")) {
 				SpoutPlayer sp = npc.getSpoutPlayer();

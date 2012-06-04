@@ -4,9 +4,11 @@ import net.ark3l.globalbank2.banker.nms.NPCEntity;
 import net.minecraft.server.Entity;
 import net.minecraft.server.EntityPlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spout.player.SpoutCraftPlayer;
 import org.getspout.spoutapi.player.SpoutPlayer;
@@ -62,4 +64,23 @@ public class Banker {
 		return obj instanceof Banker && getBukkitEntity().getEntityId() == ((Banker) obj).getBukkitEntity().getEntityId();
 	}
 
+	public void turnToFace(Location point) {
+		if (getEntity().getBukkitEntity().getWorld() != point.getWorld()) {
+			return;
+		}
+		Location npcLoc = ((LivingEntity) getEntity().getBukkitEntity()).getEyeLocation();
+		double xDiff = point.getX() - npcLoc.getX();
+		double zDiff = point.getZ() - npcLoc.getZ();
+		double DistanceXZ = Math.sqrt(xDiff * xDiff + zDiff * zDiff);
+		double newYaw = Math.acos(xDiff / DistanceXZ) * 180 / Math.PI;
+		if (zDiff < 0.0) {
+			newYaw = newYaw + Math.abs(180 - newYaw) * 2;
+		}
+		setYaw((float) (newYaw - 90));
+	}
+
+	public void setYaw(float yaw) {
+		getEntity().yaw = yaw;
+		((EntityPlayer)getEntity()).X = yaw;
+	}
 }
