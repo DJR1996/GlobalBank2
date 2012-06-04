@@ -3,6 +3,7 @@ package net.ark3l.globalbank2.listeners;
 import net.ark3l.globalbank2.GlobalBank;
 import net.ark3l.globalbank2.PlayerState;
 import net.ark3l.globalbank2.PlayerState.PlayerStatus;
+import net.ark3l.globalbank2.delayedTasks.InventoryClose;
 import net.ark3l.globalbank2.methods.SimpleMethods;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,7 +24,7 @@ public class BInventoryListener implements Listener {
 	public void onInventoryClose(InventoryCloseEvent e) {
 		if (!(e.getPlayer() instanceof Player)) return;
 		int i = PlayerState.getPlayerState((Player) e.getPlayer()).getSlot();
-		b.getServer().getScheduler().scheduleSyncDelayedTask(b, new InventoryClose((Player) e.getPlayer(), e.getInventory(), i), 2);
+		b.getServer().getScheduler().scheduleSyncDelayedTask(b, new InventoryClose((Player) e.getPlayer(), e.getInventory(), i));
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)

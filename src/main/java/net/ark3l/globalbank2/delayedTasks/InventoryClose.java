@@ -1,4 +1,4 @@
-package net.ark3l.globalbank2.listeners;
+package net.ark3l.globalbank2.delayedTasks;
 
 import net.ark3l.globalbank2.GlobalBank;
 import net.ark3l.globalbank2.PlayerState;
@@ -25,8 +25,7 @@ public class InventoryClose implements Runnable {
 	public void run() {
 		CraftPlayer craftPlayer = (CraftPlayer) p;
 		EntityPlayer entityPlayer = craftPlayer.getHandle();
-		if (entityPlayer == null
-				|| entityPlayer.activeContainer == entityPlayer.defaultContainer) {
+		if (entityPlayer == null || entityPlayer.activeContainer == entityPlayer.defaultContainer) {
 			PlayerState.getPlayerState(p).setBuyingSlot(0);
 			if (PlayerState.getPlayerState(p).getPs() == PlayerStatus.SLOT) {
 				SlotDataMethods.saveBank(p, Inv.getContents().clone(), slot);
