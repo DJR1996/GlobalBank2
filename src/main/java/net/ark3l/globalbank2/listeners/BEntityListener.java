@@ -1,8 +1,9 @@
 package net.ark3l.globalbank2.listeners;
 
-import net.ark3l.globalbank2.banker.entity.Banker;
 import net.ark3l.globalbank2.GlobalBank;
+import net.ark3l.globalbank2.banker.entity.Banker;
 import net.ark3l.globalbank2.util.SqliteDB;
+import net.minecraft.server.EntityPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,12 +22,17 @@ public class BEntityListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onEntityDamage(EntityDamageEvent event) {
-		if (!(event instanceof EntityDamageByEntityEvent)) {
+	public void onEntityDamage(EntityDamageEvent entityDamageEvent) {
+		if (!(entityDamageEvent instanceof EntityDamageByEntityEvent)) {
 			return;
 		}
+
+		EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) entityDamageEvent;
+
 		if (b.manager.isNPC(event.getEntity())) {
-			Player player = (Player) ((EntityDamageByEntityEvent) event).getDamager();
+			if(!(event.getDamager() instanceof EntityPlayer)) return;
+
+			Player player = (Player)  event.getDamager();
 			if (b.playersDeletingBankers.contains(player)) {
 				Banker banker = b.manager.getBanker(b.manager.getNPCIdFromEntity(event.getEntity()));
 				SqliteDB.delBanker(banker.bankName);
