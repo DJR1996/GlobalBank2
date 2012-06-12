@@ -24,8 +24,7 @@ public class Sort {
 			ItemStack item = items[i];
 
 			// Avoid infinite stacks and stacks with durability
-			if (item == null || item.getAmount() <= 0
-					|| ItemType.shouldNotStack(item.getTypeId())) {
+			if (item == null || item.getAmount() <= 0 || ItemType.shouldNotStack(item.getTypeId())) {
 				continue;
 			}
 
