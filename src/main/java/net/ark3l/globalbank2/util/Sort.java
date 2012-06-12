@@ -1,10 +1,28 @@
 package net.ark3l.globalbank2.util;
 
+/*
+   GlobalBank2 - RuneScape/WoW style banking for Bukkit
+   Copyright (C) 2012  Oliver 'Arkel' Brown
+
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+   */
+
 import org.bukkit.inventory.ItemStack;
 
 /**
- * @author Faye Bickerton AKA VeraLapsa
- * @version 2.0
+ * @author Faye 'Veralapsa' Bickerton
+ * Modded for GlobalBank2 by Arkel
  */
 public class Sort {
 
