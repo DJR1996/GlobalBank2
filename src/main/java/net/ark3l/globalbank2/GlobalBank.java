@@ -61,6 +61,8 @@ public class GlobalBank extends JavaPlugin {
 	public Economy economy = null;
 	public NPCManager manager = null;
 
+	private String noPermission = ChatColor.DARK_RED + "You don't have permission to use that command!";
+
 	public void onEnable() {
 		plugin = this;
 		manager = new NPCManager(this);
@@ -97,7 +99,7 @@ public class GlobalBank extends JavaPlugin {
 	private void npcSetup() {
 		this.manager = new NPCManager(this);
 		HashMap<Location, String> hm = SqliteDB.getBankers();
-		for (Map.Entry<Location, String> entry: hm.entrySet()) {
+		for (Map.Entry<Location, String> entry : hm.entrySet()) {
 			manager.spawnBanker(entry.getKey(), entry.getValue());
 		}
 	}
@@ -119,41 +121,49 @@ public class GlobalBank extends JavaPlugin {
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-
 		if (commandLabel.equalsIgnoreCase("gb") && sender instanceof Player) {
+			Player player = (Player) sender;
 			if (args.length > 0) {
-				if (args[0].equalsIgnoreCase("create") && args.length > 1 && sender.hasPermission("gb.create")) {
-					// strip the pitch and yaw off of the location so the NPC isn't funneh
-					Location location = ((Player) sender).getLocation().clone();
-					location.setPitch(0); location.setYaw(0);
-					if(args[1].length() > 16) {
-						sender.sendMessage(ChatColor.BLUE + "[GlobalBank2] "
-								+ ChatColor.WHITE + "Bank names must be no longer than 16 letters");
+				if (args[0].equalsIgnoreCase("create") && args.length > 1) {
+					if (!player.hasPermission("gb.create")) {
+						player.sendMessage(noPermission);
 						return true;
 					}
+					// strip the pitch and yaw off of the location so the NPC isn't funneh
+					Location location = player.getLocation().clone();
+					location.setPitch(0);
+					location.setYaw(0);
+
+					if (args[1].length() > 16) {
+						player.sendMessage(ChatColor.BLUE + "[GlobalBank2] " + ChatColor.WHITE + "Bank names must be no longer than 16 letters");
+						return true;
+					}
+
 					SqliteDB.newBanker(args[1], location);
 					manager.spawnBanker(location, args[1]);
-					sender.sendMessage(ChatColor.BLUE + "[GlobalBank2] "
-							+ ChatColor.WHITE + "Bank: " + ChatColor.GOLD
-							+ args[1] + ChatColor.WHITE + " has been created.");
-				} else if (args[0].equalsIgnoreCase("delete") && sender.hasPermission("gb.delete")) {
-					sender.sendMessage(ChatColor.BLUE + "[GlobalBank2] "
-							+ ChatColor.WHITE
-							+ "Please punch a Banker to remove them.");
-					this.playersDeletingBankers.add((Player) sender);
-				} else if (args[0].equalsIgnoreCase("face") && sender.hasPermission("gb.face")) {
-					sender.sendMessage(ChatColor.BLUE + "[GlobalBank2] "
-							+ ChatColor.WHITE
-							+ "Please punch a Banker to make them face towards you.");
-					this.playersChangingBankersDirection.add((Player) sender);
+
+					player.sendMessage(ChatColor.BLUE + "[GlobalBank2] " + ChatColor.WHITE + "Bank: " + ChatColor.GOLD + args[1] + ChatColor.WHITE + " has been created.");
+				} else if (args[0].equalsIgnoreCase("delete")) {
+					if (!player.hasPermission("gb.delete")) {
+						player.sendMessage(noPermission);
+						return true;
+					}
+
+					this.playersDeletingBankers.add(player);
+					player.sendMessage(ChatColor.BLUE + "[GlobalBank2] " + ChatColor.WHITE + "Please punch a Banker to remove them.");
+				} else if (args[0].equalsIgnoreCase("face")) {
+					if (!player.hasPermission("gb.face")) {
+						player.sendMessage(noPermission);
+						return true;
+					}
+
+					this.playersChangingBankersDirection.add(player);
+					player.sendMessage(ChatColor.BLUE + "[GlobalBank2] " + ChatColor.WHITE + "Please punch a Banker to make them face towards you.");
 				} else {
-					sender.sendMessage(ChatColor.BLUE
-							+ "[GlobalBank2] "
-							+ ChatColor.WHITE
-							+ " You do not have permission to use this command or it was poorly formatted.");
+					player.sendMessage(ChatColor.BLUE + "[GlobalBank2] " + ChatColor.WHITE + "Invalid command. Use " + ChatColor.BLUE + " /gb help " + ChatColor.WHITE + "for help.");
 				}
 			} else {
-				sender.sendMessage(ChatColor.BLUE + this.toString());
+				player.sendMessage(ChatColor.BLUE + this.toString());
 			}
 			return true;
 		} else {
